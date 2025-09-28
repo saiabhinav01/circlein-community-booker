@@ -7,6 +7,7 @@ import { getFirebaseServices } from "@/lib/firebase/client";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { BookingSwapModal } from "@/components/shared/booking-swap-modal";
+import { QrModal } from "@/components/shared/qr-modal";
 import { toast } from "@/components/ui/sonner";
 
 interface BookingRow { id: string; amenityId: string; startTime: any; endTime: any; status: string; qrId: string; }
@@ -16,6 +17,8 @@ export default function MyBookingsPage() {
   const [rows, setRows] = useState<BookingRow[]>([]);
   const [openSwap, setOpenSwap] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
+  const [openQr, setOpenQr] = useState(false);
+  const [qrValue, setQrValue] = useState("");
 
   useEffect(() => {
     if (!session?.user?.email) return;
@@ -67,6 +70,7 @@ export default function MyBookingsPage() {
                 <div className="col-span-3">{format(start, "PP p")}</div>
                 <div className="col-span-3">{format(end, "PP p")}</div>
                 <div className="col-span-2 flex justify-end gap-2">
+                  <Button variant="outline" size="sm" onClick={() => { setQrValue(r.qrId); setOpenQr(true); }}>QR</Button>
                   <Button variant="secondary" size="sm" onClick={() => { setSelectedBookingId(r.id); setOpenSwap(true); }}>Request Swap</Button>
                   <Button variant="destructive" size="sm" onClick={() => cancelBooking(r.id)}>Cancel</Button>
                 </div>
@@ -80,6 +84,7 @@ export default function MyBookingsPage() {
       </div>
 
       <BookingSwapModal open={openSwap} onOpenChange={setOpenSwap} bookingId={selectedBookingId} />
+      <QrModal open={openQr} onOpenChange={setOpenQr} value={qrValue} />
     </div>
   );
 }

@@ -5,6 +5,7 @@ export function AdminNav() {
     { href: "/admin", label: "Overview" },
     { href: "/admin/amenities", label: "Amenities" },
     { href: "/admin/access-codes", label: "Access Codes" },
+    { href: "/admin/scan", label: "Scanner" },
     { href: "/admin/festival", label: "Festival Mode" },
   ];
   return (
