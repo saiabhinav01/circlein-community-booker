@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/layout/theme-provider";
 import { AppShell } from "@/components/layout/app-shell";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "./providers";
+import { ServiceWorkerRegister } from "@/components/shared/sw-register";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {children}
             </AppShell>
             <Toaster richColors position="top-right" closeButton />
+            <ServiceWorkerRegister />
           </ThemeProvider>
         </Providers>
       </body>
