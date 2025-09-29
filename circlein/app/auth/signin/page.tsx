@@ -1,4 +1,5 @@
 import { SignInForm } from "@/components/auth/signin-form";
+import Link from "next/link";
 
 export default function SignInPage() {
   return (
@@ -8,6 +9,9 @@ export default function SignInPage() {
         <p className="text-sm text-muted-foreground mt-1">Use your community account.</p>
         <div className="mt-6">
           <SignInForm />
+          <p className="text-xs text-muted-foreground mt-3 text-center">
+            New resident? <Link href="/auth/signup" className="underline">Validate access code</Link>
+          </p>
         </div>
       </div>
     </div>
