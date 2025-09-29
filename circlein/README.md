@@ -2,6 +2,8 @@
 
 Community amenity booking application.
 
+Status: MVP implemented (auth, bookings, admin, QR, PWA). Version 0.1.1.
+
 - Next.js 14 (App Router)
 - TypeScript
 - Tailwind CSS
