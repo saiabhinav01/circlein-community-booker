@@ -7,6 +7,7 @@ import { collection, getFirestore, onSnapshot, query, orderBy } from "firebase/f
 import { getFirebaseServices } from "@/lib/firebase/client";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 interface AmenityItem {
   id: string;
@@ -16,6 +17,7 @@ interface AmenityItem {
 }
 
 export default function DashboardPage() {
+  const { data: session } = useSession();
   const [amenities, setAmenities] = useState<AmenityItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,6 +36,20 @@ export default function DashboardPage() {
     });
     return () => unsub();
   }, []);
+
+  if (!session?.user) {
+    return (
+      <div className="min-h-dvh grid place-items-center p-6">
+        <div className="w-full max-w-sm rounded-xl border bg-card p-6 shadow text-center">
+          <h1 className="text-xl font-semibold">Welcome to CircleIn</h1>
+          <p className="text-sm text-muted-foreground mt-1">Please sign in to continue</p>
+          <Link href="/auth/signin">
+            <Button className="mt-4">Sign in with Google</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

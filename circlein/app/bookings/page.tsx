@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { collection, getFirestore, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { getFirebaseServices } from "@/lib/firebase/client";
 import { format } from "date-fns";
@@ -47,6 +48,20 @@ export default function MyBookingsPage() {
     } catch (e: any) {
       toast.error(e.message);
     }
+  }
+
+  if (!session?.user) {
+    return (
+      <div className="min-h-dvh grid place-items-center p-6">
+        <div className="w-full max-w-sm rounded-xl border bg-card p-6 shadow text-center">
+          <h1 className="text-xl font-semibold">My Bookings</h1>
+          <p className="text-sm text-muted-foreground mt-1">Please sign in to view your bookings</p>
+          <Link href="/auth/signin">
+            <Button className="mt-4">Sign in</Button>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (

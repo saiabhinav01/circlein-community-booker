@@ -12,6 +12,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const role = (session?.user as any)?.role ?? "resident";
+  const isAuthRoute = pathname?.startsWith("/auth");
 
   const links = [
     { href: "/", label: "Dashboard", icon: SquareGanttChart },
@@ -20,6 +21,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   if (role === "admin") {
     links.push({ href: "/admin", label: "Admin Panel", icon: Shield });
+  }
+
+  // On auth routes or when not authenticated, render content without sidebar
+  if (isAuthRoute || !session?.user) {
+    return <main className="min-h-dvh bg-background">{children}</main>;
   }
 
   return (
@@ -40,12 +46,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
-        <div className="p-3 border-t">
-          <Button variant="secondary" className="w-full" type="button" onClick={() => signOut({ callbackUrl: "/auth/signin" })}>
-            <LogOut className="h-4 w-4 mr-2" />
-            Sign out
-          </Button>
-        </div>
+        {session?.user && (
+          <div className="p-3 border-t">
+            <Button variant="secondary" className="w-full" type="button" onClick={() => signOut({ callbackUrl: "/auth/signin" })}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign out
+            </Button>
+          </div>
+        )}
       </aside>
       <div className="md:hidden border-b bg-slate-900/50">
         <div className="h-14 px-3 flex items-center justify-between">
