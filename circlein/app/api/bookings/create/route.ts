@@ -3,6 +3,7 @@ import { getAdminDb } from "@/lib/firebase/admin";
 import { getServerSession } from "next-auth";
 import { getAuthOptions } from "@/lib/auth";
 import { Timestamp } from "firebase-admin/firestore";
+import { Resend } from "resend";
 import { v4 as uuidv4 } from "uuid";
 
 export async function POST(req: NextRequest) {
@@ -51,6 +52,20 @@ export async function POST(req: NextRequest) {
         createdAt: Timestamp.now(),
       });
     });
+
+    // Send email notification (best-effort)
+    try {
+      const resendApiKey = process.env.RESEND_API_KEY;
+      if (resendApiKey && session.user?.email) {
+        const resend = new Resend(resendApiKey);
+        await resend.emails.send({
+          from: process.env.RESEND_FROM ?? "CircleIn <noreply@circlein.app>",
+          to: session.user.email,
+          subject: `Booking ${status === 'waitlisted' ? 'request (waitlisted)' : 'confirmed'}`,
+          html: `<p>Your booking for amenity ${amenityId} starting ${new Date(startTime).toLocaleString()} is ${status}.</p>`,
+        });
+      }
+    } catch {}
 
     return NextResponse.json({ ok: true, status });
   } catch (e: any) {

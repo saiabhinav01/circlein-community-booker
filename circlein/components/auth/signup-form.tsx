@@ -10,6 +10,8 @@ export function SignUpForm() {
   const router = useRouter();
   const { data: session } = useSession();
   const [code, setCode] = useState("");
+  const [name, setName] = useState("");
+  const [role, setRole] = useState<"resident" | "admin">("resident");
   const [loading, setLoading] = useState(false);
 
   const user = session?.user as any;
@@ -25,7 +27,7 @@ export function SignUpForm() {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, name: user.name, email: user.email, uid: user.id ?? user.email }),
+        body: JSON.stringify({ code, name: name || user.name, email: user.email, uid: user.id ?? user.email, role }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to sign up");
@@ -40,6 +42,19 @@ export function SignUpForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-2">
+          <label className="text-sm" htmlFor="fullName">Full name</label>
+          <input id="fullName" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className="w-full rounded-md bg-background border px-3 py-2 focus-ring" />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm" htmlFor="role">Role</label>
+          <select id="role" value={role} onChange={(e) => setRole(e.target.value as any)} className="w-full rounded-md bg-background border px-3 py-2 focus-ring">
+            <option value="resident">Resident</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+      </div>
       <div className="space-y-2">
         <label className="text-sm" htmlFor="code">Unique Access Code</label>
         <input id="code" name="code" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter your code" 
